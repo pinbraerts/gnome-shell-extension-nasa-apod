@@ -15,8 +15,6 @@ Gettext.bindtextdomain('nasa-apod', Me.dir.get_child('locale').get_path());
 const _ = Gettext.gettext;
 
 
-const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
-
 /**
  * https://gjs.guide/extensions/review-guidelines/review-guidelines.html#only-use-init-for-initialization
  */
@@ -86,12 +84,13 @@ function buildNewApiKeyDialog() {
 
 /**
  * @param {string} apiKey the API key string
+ * @param {string} apiUrl the base API URL to test against
  * @returns {Object} a Promise that resolves to true if the api key is valid, false otherwise
  */
-function testApiKey(apiKey) {
+function testApiKey(apiKey, apiUrl) {
     let httpSession = new Soup.SessionAsync();
     Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
-    let request = Soup.Message.new('GET', `${NasaApodURL}?api_key=${apiKey}`);
+    let request = Soup.Message.new('GET', `${apiUrl}?api_key=${apiKey}`);
     Utils.ext_log(`Checking if ${apiKey} is valid...`);
     return new Promise(resolve => {
         httpSession.queue_message(request, (session, message) => {
@@ -131,6 +130,8 @@ function buildPrefsWidget() {
     let imageResCombo = buildable.get_object('image_resolution_combo');
     let imageResMeteredCombo = buildable.get_object('image_resolution_metered_combo');
     let refreshSwitch = buildable.get_object('autorefresh_metered_network_switch');
+    let apiUrlEntry = buildable.get_object('api_url_entry');
+    let apiUrlReset = buildable.get_object('api_url_reset');
     let apiKeysListBox = buildable.get_object('api_keys_listbox');
     let apiKeysAdd = buildable.get_object('api_keys_add');
     let apiKeysReset = buildable.get_object('api_keys_reset');
@@ -200,6 +201,22 @@ function buildPrefsWidget() {
     settings.bind('image-resolution-metered', imageResMeteredCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
     settings.bind('refresh-metered', refreshSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
+    // - API URL entry
+    apiUrlEntry.set_text(settings.get_string('api-url'));
+    apiUrlEntry.connect('changed', function () {
+        let url = apiUrlEntry.get_text().trim();
+        if (url.length > 0)
+            settings.set_string('api-url', url);
+    });
+    settings.connect('changed::api-url', function () {
+        let url = settings.get_string('api-url');
+        if (apiUrlEntry.get_text() !== url)
+            apiUrlEntry.set_text(url);
+    });
+    apiUrlReset.connect('clicked', function () {
+        settings.reset('api-url');
+    });
+
     // - API key frame
     /**
      *
@@ -243,7 +260,7 @@ function buildPrefsWidget() {
             let valid = false;
             if (length === 40) {
                 checking_lb.show();
-                valid = await testApiKey(apiKey);
+                valid = await testApiKey(apiKey, settings.get_string('api-url'));
                 checking_lb.hide();
             }
             invalid_lb.set_visible(length === 40 && valid !== true);

@@ -522,6 +522,32 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">10</property>
                     <child>
+                      <object class="GtkBox" id="api_url_box">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkLabel" id="api_url_label">
+                            <property name="label" translatable="yes">API base URL:</property>
+                            <property name="halign">start</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="api_url_entry">
+                            <property name="hexpand">1</property>
+                            <property name="halign">fill</property>
+                            <property name="placeholder_text">https://api.nasa.gov/planetary/apod</property>
+                            <property name="input-hints">GTK_INPUT_HINT_NO_EMOJI | GTK_INPUT_HINT_NO_SPELLCHECK</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="api_url_reset">
+                            <property name="label" translatable="yes">Default</property>
+                            <property name="tooltip_text" translatable="yes">Reset to the default NASA APOD API URL</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkLabel">
                         <property name="label" translatable="yes">API keys can be obtained from the &lt;a href=&quot;https://api.nasa.gov/index.html#apply-for-an-api-key&quot;&gt;NASA APOD website&lt;/a&gt;.
 Each key is limited to 1000 requests per hour, and hence you may not be able to refresh with the default keys.</property>

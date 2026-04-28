@@ -21,7 +21,6 @@ const Notifications = Me.imports.notifications;
 const Gettext = imports.gettext.domain('nasa-apod');
 const _ = Gettext.gettext;
 
-const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
 const NasaApodWebsiteURL = 'https://apod.nasa.gov/apod/';
 const NasaApodGetYourAPIURL = 'https://api.nasa.gov/';
 
@@ -365,6 +364,7 @@ const NasaApodIndicator = GObject.registerClass({
 
             let apiKey = this._apiKeys[0];
             let pinned = this._settings.get_string('pinned-background');
+            let NasaApodURL = this._settings.get_string('api-url');
             let url = `${NasaApodURL}?api_key=${apiKey}`;
             if (pinned.length > 0)
                 url += `&date=${Utils.parse_path(pinned).date}`;

@@ -39,6 +39,12 @@
       <description>An empty string means that the default folder is used: ~/.cache/apod/</description>
     </key>
 
+    <key name="api-url" type="s">
+      <default>"https://api.nasa.gov/planetary/apod"</default>
+      <summary>NASA APOD API base URL.</summary>
+      <description>The base URL used to fetch the Astronomy Picture of the Day. Change this if you use a compatible self-hosted or proxy API.</description>
+    </key>
+
     <key name="api-keys" type="as">
       <default>["XKSoS8Bv05ij8JH8UWa7eqMavXgGfFStcc6Pu3KH", "jCUjMOBpL523SxLoi4PogFZ3YsvvFtVNyEvRd0IB"]</default>
       <summary>NASA APOD api key.</summary>
